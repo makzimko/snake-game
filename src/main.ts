@@ -13,10 +13,15 @@ root.appendChild(scoreElement);
 
 let score = 0;
 
-for (let i = 0; i < 20; i++) {
+const size = {
+    width: 30,
+    height: 20
+}
+
+for (let i = 0; i < size.height; i++) {
     const row = document.createElement('div');
     row.classList.add('row');
-    for (let j = 0; j < 20; j++) {
+    for (let j = 0; j < size.width; j++) {
         const cell = document.createElement('div');
         cell.id = `cell-${i}-${j}`;
         cell.classList.add('cell');
@@ -28,10 +33,10 @@ for (let i = 0; i < 20; i++) {
 const snake = new Snake({ length : 3 });
 const head = {
     x: 10,
-    y: 18
+    y: 8
 };
 let snakeDirection = Direction.UP;
-const food = {};
+const food: { x: number, y: number } = { x: 0, y: 0 };
 let rotation = 0;
 
 const getSegmentDirection = (segment: Segment) => {
@@ -50,8 +55,8 @@ const eraseBoard = () => {
 }
 
 const generateFood = () => {
-    food.x = Math.floor(Math.random() * 10)
-    food.y = Math.floor(Math.random() * 10)
+    food.x = Math.floor(Math.random() * size.width)
+    food.y = Math.floor(Math.random() * size.height)
 }
 const drawSnake = () => {
     eraseBoard();
@@ -86,18 +91,33 @@ const drawSnake = () => {
     root.style.transform = `rotate(${rotation}deg)`;
 }
 
+const getCorrectPosition = (position: number, limit: number) => {
+    if (position < 0) {
+        return limit + position;
+    }
+    if (position >= limit) {
+        return position - limit;
+    }
+    return position;
+}
+
+const updateHeadPosition = (xDiff: number, yDiff: number) => {
+    head.x = getCorrectPosition(head.x + xDiff, size.width);
+    head.y = getCorrectPosition(head.y + yDiff, size.height);
+}
+
 const makeMove = () => {
     if (snakeDirection === Direction.UP) {
-        head.y--;
+        updateHeadPosition(0, -1);
     }
     if (snakeDirection === Direction.DOWN) {
-        head.y++;
+        updateHeadPosition(0, 1);
     }
     if (snakeDirection === Direction.LEFT) {
-        head.x--;
+        updateHeadPosition(-1, 0);
     }
     if (snakeDirection === Direction.RIGHT) {
-        head.x++;
+        updateHeadPosition(1, 0);
     }
 
     const feed = head.x === food.x && head.y === food.y;
