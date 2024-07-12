@@ -25,6 +25,7 @@ class Snake {
     }
     static directions = [Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT];
     #body: Array<Segment>;
+    #turnQueue: TurnDirection[] = [];
 
     constructor(props: Partial<SnakeSettings> = {}) {
         this.#settings = {
@@ -37,7 +38,9 @@ class Snake {
     }
 
     get body() {
-        return this.#body
+        const turn = this.#turnQueue[0];
+        const head = this.#directionHead[turn] ?? Segment.HEAD;
+        return [head, ...this.#body.slice(1)];
     }
 
     move(feed: boolean = false) {
@@ -55,12 +58,12 @@ class Snake {
         }
         this.#validate(body);
 
+        this.#turnQueue.shift();
         this.#body = body;
     }
 
     turn(direction: TurnDirection) {
-        const head = this.#directionHead[direction];
-        this.#body = [head, ...this.#body.slice(1)];
+        this.#turnQueue.push(direction);
     }
 
     #validate(snake: Array<Segment>) {
