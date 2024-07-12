@@ -128,7 +128,7 @@ const makeMove = () => {
         generateFood();
     }
 
-    snake.move(feed);
+    snake.move(feed ? 3 : 0);
     drawSnake();
 }
 

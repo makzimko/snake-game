@@ -178,14 +178,27 @@ describe('Snake', () => {
          * ◥
          */
 
-        snake.move(true);
+        snake.move(1);
         expect(snake.body).toEqual([
             Segment.HEAD,
             Segment.STRAIGHT,
             Segment.STRAIGHT,
             Segment.TAIL_LEFT
         ]);
-    })
+    });
+
+    it('should increase size step by step while bulk feeding', () => {
+        const snake = new Snake({ length: 3 });
+
+        snake.move(2);
+        expect(snake.body.length).toBe(4);
+
+        snake.move();
+        expect(snake.body.length).toBe(5);
+
+        snake.move();
+        expect(snake.body.length).toBe(5);
+    });
 
     it('should make complex moves', () => {
         const snake = new Snake({ length: 7 });

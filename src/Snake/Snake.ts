@@ -26,6 +26,7 @@ class Snake {
     static directions = [Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT];
     #body: Array<Segment>;
     #turnQueue: TurnDirection[] = [];
+    #food = 0;
 
     constructor(props: Partial<SnakeSettings> = {}) {
         this.#settings = {
@@ -43,7 +44,8 @@ class Snake {
         return [head, ...this.#body.slice(1)];
     }
 
-    move(feed: boolean = false) {
+    move(food: number = 0) {
+        this.#food += food;
         const head = this.body[0] as HeadSegment;
         const preTail = this.body[this.body.length - 2] as BodySegment;
 
@@ -51,7 +53,8 @@ class Snake {
         const tail = this.#segmentTail[preTail];
 
         const body = [Segment.HEAD, postHead, ...this.#body.slice(1, -2)]
-        if (feed) {
+        if (this.#food > 0) {
+            this.#food--;
             body.push(...this.#body.slice(-2));
         } else {
             body.push(tail)
