@@ -18,6 +18,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "pixi.js": "^8.2.5",
     "three": "^0.166.1"
   }
 }
