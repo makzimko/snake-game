@@ -66,6 +66,7 @@ class Board {
     [Direction.LEFT]: [-1, 0],
     [Direction.RIGHT]: [1, 0],
   };
+  #turnQueue: Direction[] = [];
 
   onRender?: (board: Cell[][]) => void;
   onCrash?: (cause: CrashCause) => void;
@@ -104,14 +105,14 @@ class Board {
   }
 
   turn(direction: Direction) {
-    const turn = getDirectionTurn(this.#snakeDirection, direction);
+    const lastDirection = this.#turnQueue[this.#turnQueue.length - 1] || this.#snakeDirection;
+    const turn = getDirectionTurn(lastDirection, direction);
 
     if (turn === undefined) {
       return false;
     }
 
-    this.#snakeDirection = direction;
-    this.#snake.turn(turn);
+    this.#turnQueue.push(direction);
   }
 
   private generateFood() {
@@ -125,8 +126,17 @@ class Board {
   }
 
   private makeMove() {
-    const [xDiff, yDiff] = this.#headUpdate[this.#snakeDirection];
+    if (this.#turnQueue.length > 0) {
+      const direction = this.#turnQueue.shift()!;
+      const turn = getDirectionTurn(this.#snakeDirection, direction);
+      this.#snakeDirection = direction;
 
+      if (turn !== undefined) {
+        this.#snake.turn(turn);
+      }
+    }
+
+    const [xDiff, yDiff] = this.#headUpdate[this.#snakeDirection];
 
     try {
       this.updateHeadPosition(xDiff, yDiff);

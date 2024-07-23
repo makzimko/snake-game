@@ -61,6 +61,18 @@ describe('Snake', () => {
         /**
          * ◿ ■ ▶
          */
+
+        snake.turn(TurnDirection.RIGHT);
+
+        expect(snake.body).toEqual([
+            Segment.HEAD_RIGHT,
+            Segment.STRAIGHT,
+            Segment.TAIL
+        ]);
+
+        /**
+         * ◹ ■ ▶
+         */
     });
 
     it('should make move into given direction', () => {
@@ -84,56 +96,6 @@ describe('Snake', () => {
          *   ▽
          */
     });
-
-    it('should make moves one by one', () => {
-        const snake = new Snake({ length: 5 });
-
-        snake.turn(TurnDirection.LEFT);
-        snake.turn(TurnDirection.LEFT);
-        snake.turn(TurnDirection.RIGHT);
-
-        snake.move();
-        /**
-         * ◢ ◣
-         *   ■
-         *   ■
-         *   ▽
-         */
-        expect(snake.body).toEqual([
-          Segment.HEAD_LEFT,
-          Segment.TURN_RIGHT,
-          Segment.STRAIGHT,
-          Segment.STRAIGHT,
-          Segment.TAIL,
-        ]);
-
-        snake.move();
-        /**
-         * ◢ ◣
-         * ◸ ■
-         *   ▽
-         */
-        expect(snake.body).toEqual([
-          Segment.HEAD_RIGHT,
-          Segment.TURN_RIGHT,
-          Segment.TURN_RIGHT,
-          Segment.STRAIGHT,
-          Segment.TAIL,
-        ]);
-
-        snake.move();
-        /**
-         *   ◢ ◣
-         * ◁ ◤ ▽
-         */
-        expect(snake.body).toEqual([
-          Segment.HEAD,
-          Segment.TURN_LEFT,
-          Segment.TURN_RIGHT,
-          Segment.TURN_RIGHT,
-          Segment.TAIL
-        ]);
-    })
 
     it('should turn tail on turns', () => {
         const snake = new Snake({ length: 3 });
