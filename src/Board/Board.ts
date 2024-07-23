@@ -24,17 +24,6 @@ type BoardSettings = {
   snakeLength?: number,
 }
 
-const getSegmentDirection = (segment: Segment) => {
-  switch (segment) {
-    case Segment.TURN_LEFT:
-    case Segment.HEAD_RIGHT:
-      return TurnDirection.LEFT;
-    case Segment.TURN_RIGHT:
-    case Segment.HEAD_LEFT:
-      return TurnDirection.RIGHT;
-  }
-}
-
 class Board {
   readonly #settings: BoardSettings = {
     width: 10,
@@ -115,6 +104,17 @@ class Board {
     this.#turnQueue.push(direction);
   }
 
+  private getSegmentDirection (segment: Segment) {
+    switch (segment) {
+      case Segment.TURN_LEFT:
+      case Segment.HEAD_RIGHT:
+        return TurnDirection.LEFT;
+      case Segment.TURN_RIGHT:
+      case Segment.HEAD_LEFT:
+        return TurnDirection.RIGHT;
+    }
+  }
+
   private generateFood() {
     this.#foodPosition.x = Math.floor(Math.random() * this.#settings.width);
     this.#foodPosition.y = Math.floor(Math.random() * this.#settings.height);
@@ -162,7 +162,7 @@ class Board {
     const newY = y + yDiff;
 
     if (newX < 0 || newX >= this.#settings.width  || newY < 0 || newY >= this.#settings.height) {
-      throw Error('Side crash position');
+      throw Error('Side crash');
     }
 
     this.#snakeHead = {
@@ -180,10 +180,12 @@ class Board {
     let direction = oppositeDirections[this.#snakeDirection];
 
     for (let i = 0; i < this.#snake.body.length; i++) {
-      board[x][y] = Cell.SNAKE;
+      if (board[x] && board[x].length) {
+        board[x][y] = Cell.SNAKE;
+      }
 
       const segment = this.#snake.body[i];
-      const turn = getSegmentDirection(segment);
+      const turn = this.getSegmentDirection(segment);
       const newDirection = turn !== undefined ? getNewDirection(direction, turn): direction;
 
       let newX = x, newY = y;
